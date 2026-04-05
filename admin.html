@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Digital Visitor Entry System</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="notification-container" id="notificationContainer"></div>
+
+        <nav class="navbar admin-nav">
+            <div class="nav-container">
+                <div class="nav-brand">
+                    <i class="fas fa-user-shield"></i>
+                    <h1>Admin Dashboard</h1>
+                </div>
+                <div class="nav-actions">
+                    <span class="user-welcome" id="admin-welcome">Welcome, Admin</span>
+                    <button class="btn-logout" id="admin-logout">Logout</button>
+                </div>
+            </div>
+        </nav>
+
+        <main class="dashboard-content">
+            <div class="dashboard-grid">
+                <!-- Left Column -->
+                <div class="dashboard-column">
+                    <!-- Add Resident Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2><i class="fas fa-user-plus"></i> Add Resident Details</h2>
+                        </div>
+                        <div class="card-body">
+                            <form id="add-resident-form">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="resident-name">Resident Name</label>
+                                        <input type="text" id="resident-name" placeholder="Full Name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="flat-number">Flat Number</label>
+                                        <input type="text" id="flat-number" placeholder="e.g., A-101" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="resident-mobile">Mobile Number</label>
+                                        <input type="text" id="resident-mobile" placeholder="10-digit number" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="resident-email">Email (Optional)</label>
+                                        <input type="email" id="resident-email" placeholder="email@example.com">
+                                    </div>
+                                </div>
+                                <div class="form-actions">
+                                    <button type="submit" class="btn-primary">Add Resident</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Residents List Card -->
+                    <div class="card">
+                        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                            <h2 style="margin: 0;"><i class="fas fa-users"></i> Residents List</h2>
+                            <div class="search-box" style="position: relative;">
+                                <input type="text" id="search-resident-input" placeholder="Search residents..." style="padding: 8px 30px 8px 15px; border-radius: 20px; border: 1px solid #ddd; outline: none; width: 220px; font-family: inherit; font-size: 0.9rem;">
+                                <i class="fas fa-search" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #7f8c8d; pointer-events: none;"></i>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-container">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Resident Name</th>
+                                            <th>Flat Number</th>
+                                            <th>Mobile Number</th>
+                                            <th>Email</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="residents-list">
+                                        <!-- Residents will be loaded here -->
+                                        <tr>
+                                            <td colspan="6" style="text-align: center; padding: 30px;">
+                                                <i class="fas fa-spinner fa-spin"></i> Loading residents...
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p class="table-note">*Click on action buttons to edit resident details</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="dashboard-column">
+                    <!-- Security Password Management -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2><i class="fas fa-shield-alt"></i> Security Password Management</h2>
+                        </div>
+                        <div class="card-body">
+                            <!-- Current Password Display -->
+                            <div class="current-password-display" id="current-password-section" style="display: none;">
+                                <label>Current Security Password</label>
+                                <div class="current-password-value-container">
+                                    <span class="current-password-value" id="current-security-password">••••••</span>
+                                    <i class="fas fa-eye toggle-password" id="toggle-current-password"></i>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="security-password-input">Set New Security Password</label>
+                                <div class="password-input-wrapper">
+                                    <input type="password" id="security-password-input"
+                                        placeholder="Enter new password">
+                                    <i class="fas fa-eye toggle-password" id="toggle-security-password"></i>
+                                </div>
+                                <small class="form-hint">Security will use this password to login (min. 6
+                                    characters)</small>
+                            </div>
+                            <div class="form-actions">
+                                <button class="btn-primary" id="update-security-password">Update Password</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- System Overview -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2><i class="fas fa-chart-bar"></i> System Overview</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="stats-grid">
+                                <div class="stat-card stat-blue">
+                                    <div class="stat-info">
+                                        <p class="stat-label">Total Residents</p>
+                                        <p class="stat-value" id="total-residents">0</p>
+                                    </div>
+                                    <i class="fas fa-users stat-icon"></i>
+                                </div>
+                                <div class="stat-card stat-green">
+                                    <div class="stat-info">
+                                        <p class="stat-label">Total Visitors</p>
+                                        <p class="stat-value" id="total-visitors">0</p>
+                                    </div>
+                                    <i class="fas fa-user-friends stat-icon"></i>
+                                </div>
+                                <div class="stat-card stat-orange">
+                                    <div class="stat-info">
+                                        <p class="stat-label">Pending Requests</p>
+                                        <p class="stat-value" id="pending-visitors">0</p>
+                                    </div>
+                                    <i class="fas fa-clock stat-icon"></i>
+                                </div>
+                                <div class="stat-card stat-purple">
+                                    <div class="stat-info">
+                                        <p class="stat-label">Today's Visitors</p>
+                                        <p class="stat-value" id="today-visitors">0</p>
+                                    </div>
+                                    <i class="fas fa-calendar-day stat-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Edit Resident Modal -->
+    <div id="edit-resident-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-edit"></i> Edit Resident</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="edit-resident-form">
+                    <input type="hidden" id="edit-resident-id">
+                    <div class="form-group">
+                        <label for="edit-name">Name</label>
+                        <input type="text" id="edit-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-flat">Flat Number</label>
+                        <input type="text" id="edit-flat" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-mobile">Mobile Number</label>
+                        <input type="text" id="edit-mobile" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-email">Email</label>
+                        <input type="email" id="edit-email">
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary modal-cancel">Cancel</button>
+                        <button type="submit" class="btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        // Admin Dashboard JavaScript
+        document.addEventListener('DOMContentLoaded', async function () {
+            // Check authentication
+            if (!isAuthenticated() || getUserRole() !== 'admin') {
+                showNotification('Please login as admin to access this page.', 'error');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
+                return;
+            }
+
+            // Set welcome message
+            const user = getUser();
+            if (user) {
+                document.getElementById('admin-welcome').textContent = `Welcome, ${user.name}`;
+            }
+
+            // Load initial data
+            await loadDashboardData();
+
+            // Set up event listeners
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            // Add Resident Form
+            document.getElementById('add-resident-form').addEventListener('submit', handleAddResident);
+
+            // Search Resident Listener
+            document.getElementById('search-resident-input').addEventListener('input', handleSearchResidents);
+
+            // Update Security Password
+            document.getElementById('update-security-password').addEventListener('click', handleUpdateSecurityPassword);
+
+            // Logout
+            document.getElementById('admin-logout').addEventListener('click', handleLogout);
+
+            // Toggle Security Password Visibility
+            document.getElementById('toggle-security-password').addEventListener('click', function () {
+                const passwordInput = document.getElementById('security-password-input');
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                this.classList.toggle('fa-eye');
+                this.classList.toggle('fa-eye-slash');
+            });
+
+            // Toggle Current Password Visibility
+            document.getElementById('toggle-current-password').addEventListener('click', function () {
+                const passwordSpan = document.getElementById('current-security-password');
+                const isHidden = passwordSpan.dataset.hidden === 'true';
+                const actualPassword = passwordSpan.dataset.password;
+                
+                if (isHidden) {
+                    passwordSpan.textContent = actualPassword;
+                    passwordSpan.dataset.hidden = 'false';
+                    this.classList.remove('fa-eye');
+                    this.classList.add('fa-eye-slash');
+                } else {
+                    passwordSpan.textContent = '••••••';
+                    passwordSpan.dataset.hidden = 'true';
+                    this.classList.remove('fa-eye-slash');
+                    this.classList.add('fa-eye');
+                }
+            });
+
+            // Modal close buttons
+            document.querySelectorAll('.modal-close, .modal-cancel').forEach(button => {
+                button.addEventListener('click', closeModals);
+            });
+
+            // Edit form submit
+            document.getElementById('edit-resident-form').addEventListener('submit', handleEditResident);
+        }
+
+        function handleSearchResidents(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('#residents-list tr[data-id]');
+            
+            rows.forEach(row => {
+                const name = row.cells[0].textContent.toLowerCase();
+                const flat = row.cells[1].textContent.toLowerCase();
+                const mobile = row.cells[2].textContent.toLowerCase();
+                const email = row.cells[3].textContent.toLowerCase();
+                
+                if (name.includes(searchTerm) || flat.includes(searchTerm) || mobile.includes(searchTerm) || email.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        async function loadDashboardData() {
+            try {
+                // Load residents
+                await loadResidents();
+
+                // Load statistics
+                await loadStatistics();
+
+                // Load security password
+                await loadSecurityPassword();
+
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+                showNotification('Error loading dashboard data', 'error');
+            }
+        }
+
+        async function loadResidents() {
+            try {
+                const response = await api.admin.getResidents();
+
+                const tbody = document.getElementById('residents-list');
+
+                if (response.success && response.data.residents) {
+                    const residents = response.data.residents;
+
+                    if (residents.length === 0) {
+                        tbody.innerHTML = `
+                            <tr>
+                                <td colspan="6" style="text-align: center; padding: 30px; color: #7f8c8d;">
+                                    <i class="fas fa-users" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
+                                    <p>No residents found. Add your first resident!</p>
+                                </td>
+                            </tr>
+                        `;
+                    } else {
+                        tbody.innerHTML = residents.map(resident => `
+                            <tr data-id="${resident._id}">
+                                <td>${escapeHtml(resident.name)}</td>
+                                <td class="editable-field" data-field="flatNumber">${escapeHtml(resident.flatNumber)}</td>
+                                <td class="editable-field" data-field="mobile">${escapeHtml(resident.mobile)}</td>
+                                <td class="editable-field" data-field="email">${escapeHtml(resident.email || '-')}</td>
+                                <td>
+                                    <span class="status-badge ${resident.firstTimeLogin ? 'status-pending' : 'status-approved'}">
+                                        ${resident.firstTimeLogin ? 'First Login Pending' : 'Active'}
+                                    </span>
+                                </td>
+                                <td>
+                                    <button class="btn-sm btn-primary edit-resident" data-id="${resident._id}">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn-sm btn-danger delete-resident" data-id="${resident._id}">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `).join('');
+
+                        // Add event listeners for edit and delete buttons
+                        document.querySelectorAll('.edit-resident').forEach(btn => {
+                            btn.addEventListener('click', () => openEditModal(btn.dataset.id));
+                        });
+
+                        document.querySelectorAll('.delete-resident').forEach(btn => {
+                            btn.addEventListener('click', () => handleDeleteResident(btn.dataset.id));
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading residents:', error);
+                showNotification('Failed to load residents', 'error');
+            }
+        }
+
+        async function loadStatistics() {
+            try {
+                const response = await api.admin.getStats();
+
+                if (response.success && response.data) {
+                    document.getElementById('total-residents').textContent = response.data.totalResidents || 0;
+                    document.getElementById('total-visitors').textContent = response.data.totalVisitors || 0;
+                    document.getElementById('pending-visitors').textContent = response.data.pendingVisitors || 0;
+                    document.getElementById('today-visitors').textContent = response.data.todayVisitors || 0;
+                }
+            } catch (error) {
+                console.error('Error loading statistics:', error);
+            }
+        }
+
+        async function loadSecurityPassword() {
+            try {
+                const response = await api.admin.getSecurityPassword();
+                const passwordSpan = document.getElementById('current-security-password');
+                const passwordSection = document.getElementById('current-password-section');
+                
+                if (response.success && response.data.password) {
+                    passwordSection.style.display = 'block';
+                    passwordSpan.dataset.password = response.data.password;
+                    passwordSpan.dataset.hidden = 'true';
+                    passwordSpan.textContent = '••••••';
+                    
+                    // Reset eye icon
+                    const toggleBtn = document.getElementById('toggle-current-password');
+                    toggleBtn.classList.remove('fa-eye-slash');
+                    toggleBtn.classList.add('fa-eye');
+                } else {
+                    passwordSection.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Error loading security password:', error);
+            }
+        }
+
+        async function handleAddResident(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('resident-name').value.trim();
+            const flat = document.getElementById('flat-number').value.trim();
+            const mobile = document.getElementById('resident-mobile').value.trim();
+            const email = document.getElementById('resident-email').value.trim();
+
+            // Validate inputs
+            if (!name || !flat || !mobile) {
+                showNotification('Please fill all required fields.', 'error');
+                return;
+            }
+
+            if (!utils.validatePhone(mobile)) {
+                showNotification('Please enter a valid 10-digit mobile number.', 'error');
+                return;
+            }
+
+            if (email && !utils.validateEmail(email)) {
+                showNotification('Please enter a valid email address.', 'error');
+                return;
+            }
+
+            try {
+                showNotification('Adding resident...', 'info');
+
+                const response = await api.admin.addResident({
+                    name,
+                    flatNumber: flat,
+                    mobile,
+                    email: email || undefined
+                });
+
+                if (response.success) {
+                    showNotification('Resident added successfully!', 'success');
+
+                    // Reset form
+                    e.target.reset();
+
+                    // Reload residents list
+                    await loadResidents();
+                    await loadStatistics();
+                } else {
+                    showNotification(response.message || 'Failed to add resident', 'error');
+                }
+            } catch (error) {
+                console.error('Error adding resident:', error);
+                showNotification(error.message || 'Server error. Please try again.', 'error');
+            }
+        }
+
+        async function handleUpdateSecurityPassword() {
+            const newPassword = document.getElementById('security-password-input').value.trim();
+
+            if (!newPassword) {
+                showNotification('Please enter a password.', 'error');
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                showNotification('Password must be at least 6 characters long.', 'error');
+                return;
+            }
+
+            try {
+                showNotification('Updating password...', 'info');
+
+                const response = await api.admin.updateSecurityPassword(newPassword);
+
+                if (response.success) {
+                    showNotification('Security password updated successfully!', 'success');
+                    
+                    // Clear the input field
+                    document.getElementById('security-password-input').value = '';
+                    
+                    // Reload security password to show it's updated
+                    await loadSecurityPassword();
+                    // Reload statistics to show everything is fresh
+                    await loadStatistics();
+
+                    // Small visual feedback to confirm it's "saved"
+                    const inputWrapper = document.querySelector('.current-password-value-container');
+                    if (inputWrapper) {
+                        inputWrapper.style.borderColor = '#2ecc71';
+                        setTimeout(() => inputWrapper.style.borderColor = '', 2000);
+                    }
+                } else {
+                    showNotification(response.message || 'Failed to update password', 'error');
+                }
+            } catch (error) {
+                console.error('Error updating security password:', error);
+                showNotification(error.message || 'Server error. Please try again.', 'error');
+            }
+        }
+
+        function openEditModal(residentId) {
+            const row = document.querySelector(`tr[data-id="${residentId}"]`);
+            if (!row) return;
+
+            const cells = row.cells;
+            document.getElementById('edit-resident-id').value = residentId;
+            document.getElementById('edit-name').value = cells[0].textContent;
+            document.getElementById('edit-flat').value = cells[1].textContent;
+            document.getElementById('edit-mobile').value = cells[2].textContent;
+            document.getElementById('edit-email').value = cells[3].textContent === '-' ? '' : cells[3].textContent;
+
+            document.getElementById('edit-resident-modal').style.display = 'block';
+        }
+
+        async function handleEditResident(e) {
+            e.preventDefault();
+
+            const residentId = document.getElementById('edit-resident-id').value;
+            const name = document.getElementById('edit-name').value.trim();
+            const flat = document.getElementById('edit-flat').value.trim();
+            const mobile = document.getElementById('edit-mobile').value.trim();
+            const email = document.getElementById('edit-email').value.trim();
+
+            if (!name || !flat || !mobile) {
+                showNotification('Name, flat number and mobile number are required.', 'error');
+                return;
+            }
+
+            if (!utils.validatePhone(mobile)) {
+                showNotification('Please enter a valid 10-digit mobile number.', 'error');
+                return;
+            }
+
+            if (email && !utils.validateEmail(email)) {
+                showNotification('Please enter a valid email address.', 'error');
+                return;
+            }
+
+            try {
+                showNotification('Updating resident...', 'info');
+
+                const response = await api.admin.updateResident(residentId, {
+                    name,
+                    flatNumber: flat,
+                    mobile,
+                    email: email || undefined
+                });
+
+                if (response.success) {
+                    showNotification('Resident updated successfully!', 'success');
+                    closeModals();
+                    await loadResidents();
+                } else {
+                    showNotification(response.message || 'Failed to update resident', 'error');
+                }
+            } catch (error) {
+                console.error('Error updating resident:', error);
+                showNotification(error.message || 'Server error. Please try again.', 'error');
+            }
+        }
+
+        async function handleDeleteResident(residentId) {
+            if (!confirm('Are you sure you want to delete this resident? This action cannot be undone.')) {
+                return;
+            }
+
+            try {
+                showNotification('Deleting resident...', 'info');
+
+                const response = await api.admin.deleteResident(residentId);
+
+                if (response.success) {
+                    showNotification('Resident deleted successfully!', 'success');
+                    await loadResidents();
+                    await loadStatistics();
+                } else {
+                    showNotification(response.message || 'Failed to delete resident', 'error');
+                }
+            } catch (error) {
+                console.error('Error deleting resident:', error);
+                showNotification(error.message || 'Server error. Please try again.', 'error');
+            }
+        }
+
+        function handleLogout() {
+            logout();
+            showNotification('Logged out successfully.', 'success');
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1000);
+        }
+
+        function closeModals() {
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.style.display = 'none';
+            });
+        }
+
+        function escapeHtml(unsafe) {
+            if (!unsafe) return unsafe;
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+    </script>
+</body>
+
+</html>

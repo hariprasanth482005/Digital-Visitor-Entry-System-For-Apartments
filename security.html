@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Dashboard - Digital Visitor Entry System</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="notification-container" id="notificationContainer"></div>
+
+        <nav class="navbar security-nav">
+            <div class="nav-container">
+                <div class="nav-brand">
+                    <i class="fas fa-shield-alt"></i>
+                    <h1>Security Dashboard</h1>
+                </div>
+                <div class="nav-actions">
+                    <span class="user-welcome" id="security-welcome">Gate Security</span>
+                    <button class="btn-logout" id="security-logout">Logout</button>
+                </div>
+            </div>
+        </nav>
+
+        <main class="dashboard-content">
+            <div class="dashboard-grid">
+                <!-- Left Column -->
+                <div class="dashboard-column">
+                    <!-- Visitor Check Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2><i class="fas fa-search"></i> Visitor Check & Approval</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="visitor-phone-check">Enter Visitor Phone Number</label>
+                                <div class="input-with-button">
+                                    <input type="text" id="visitor-phone-check" placeholder="10-digit mobile number">
+                                    <button class="btn-primary" id="check-visitor-btn">Check</button>
+                                </div>
+                                <small class="form-hint">Enter visitor's phone number to check if they are
+                                    registered</small>
+                            </div>
+
+                            <!-- Visitor Details Display -->
+                            <div id="visitor-details" style="display: none;">
+                                <h3 class="section-title">Visitor Details</h3>
+                                <div class="details-card">
+                                    <div class="details-grid">
+                                        <div class="detail-item">
+                                            <p class="detail-label">Visitor Name</p>
+                                            <p class="detail-value" id="detail-name">-</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <p class="detail-label">Visitor Contact Number</p>
+                                            <p class="detail-value" id="detail-phone">-</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <p class="detail-label">Flat Number</p>
+                                            <p class="detail-value" id="detail-flat">-</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <p class="detail-label">Visitor Purpose</p>
+                                            <p class="detail-value" id="detail-purpose">-</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <p class="detail-label">Resident Name</p>
+                                            <p class="detail-value" id="detail-resident">-</p>
+                                        </div>
+                                        <div class="detail-item">
+                                            <p class="detail-label">Resident Contact</p>
+                                            <p class="detail-value" id="detail-resident-contact">-</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="action-buttons" id="visitor-action-buttons">
+                                    <button class="btn-success" id="approve-visitor-btn">Check In</button>
+                                    <button class="btn-danger" id="decline-visitor-btn">Decline Entry</button>
+                                    <button class="btn-secondary" id="checkout-visitor-btn"
+                                        style="display: none;">Checkout</button>
+                                </div>
+                            </div>
+
+                            <!-- Add Visitor Form -->
+                            <div id="add-visitor-form" style="display: none;">
+                                <h3 class="section-title">Add New Visitor</h3>
+                                <form id="new-visitor-form">
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="visitor-name">Visitor Name *</label>
+                                            <input type="text" id="visitor-name" placeholder="Full Name" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="visitor-contact">Contact Number *</label>
+                                            <input type="text" id="visitor-contact" placeholder="10-digit number"
+                                                required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="visitor-flat">Flat Number to Visit *</label>
+                                            <input type="text" id="visitor-flat" placeholder="e.g., A-101" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="visitor-purpose">Purpose of Visit *</label>
+                                            <select id="visitor-purpose" required>
+                                                <option value="">Select Purpose</option>
+                                                <option value="Delivery">Delivery</option>
+                                                <option value="Friend">Friend</option>
+                                                <option value="Relative">Relative</option>
+                                                <option value="Service">Service/Maintenance</option>
+                                                <option value="Other">Other</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div id="other-purpose-container" style="display: none;">
+                                        <div class="form-group">
+                                            <label for="other-purpose">Specify Purpose</label>
+                                            <input type="text" id="other-purpose" placeholder="Enter purpose">
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="vehicle-number">Vehicle Number (Optional)</label>
+                                            <input type="text" id="vehicle-number" placeholder="e.g., MH01AB1234">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="id-proof">ID Proof (Optional)</label>
+                                            <input type="text" id="id-proof" placeholder="e.g., DL, Aadhar">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="visitor-notes">Notes (Optional)</label>
+                                        <textarea id="visitor-notes" rows="4"
+                                            placeholder="Any additional information"></textarea>
+                                    </div>
+                                    <div class="form-actions">
+                                        <button type="button" class="btn-secondary"
+                                            id="cancel-add-visitor">Cancel</button>
+                                        <button type="submit" class="btn-primary">Add Visitor</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- Add Visitor Prompt -->
+                            <div id="add-visitor-prompt" style="display: none; text-align: center;">
+                                <p class="prompt-text">Visitor not found in records. Would you like to add them?</p>
+                                <button class="btn-primary" id="show-add-visitor-form">Add New Visitor</button>
+                            </div>
+
+                            <!-- Visitor Already Processed Message -->
+                            <div id="visitor-processed-message" style="display: none; text-align: center;">
+                                <p class="prompt-text">Previous visit was <strong id="prev-visit-status"></strong>.
+                                    Create a new entry?</p>
+                                <div class="action-buttons" style="justify-content: center; margin-top: 15px;">
+                                    <button class="btn-primary" id="create-new-visit-btn">New Visit</button>
+                                    <button class="btn-secondary" id="check-another-after-process">Check
+                                        Another</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Visitors Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2><i class="fas fa-calendar-day"></i> Today's Visitors</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-container">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Visitor Name</th>
+                                            <th>Contact</th>
+                                            <th>Flat</th>
+                                            <th>Purpose</th>
+                                            <th>Status</th>
+                                            <th>Check-in</th>
+                                            <th>Check-out</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="recent-visitors">
+                                        <tr>
+                                            <td colspan="8" style="text-align: center; padding: 30px;">
+                                                <i class="fas fa-spinner fa-spin"></i> Loading visitors...
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visitor History Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2><i class="fas fa-history"></i> Visitor History</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group" style="margin-bottom: 20px;">
+                                <label for="history-date">Select Date</label>
+                                <input type="date" id="history-date" onkeydown="return false"
+                                    style="cursor: pointer; width: 100%;">
+                            </div>
+                            <div class="table-container" style="max-height: 500px; overflow-y: auto;">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Flat</th>
+                                            <th>Status</th>
+                                            <th>Check-in</th>
+                                            <th>Check-out</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="history-visitors-list">
+                                        <tr>
+                                            <td colspan="6" style="text-align: center; padding: 30px; color: #7f8c8d;">
+                                                <i class="fas fa-calendar-alt"
+                                                    style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
+                                                <p>Select a date to view history.</p>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="dashboard-column">
+                    <!-- Quick Actions Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2><i class="fas fa-bolt"></i> Quick Actions</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="quick-actions">
+                                <button class="quick-action-btn" id="check-another-visitor">
+                                    <i class="fas fa-search"></i>
+                                    <span>Check Another Visitor</span>
+                                </button>
+                                <button class="quick-action-btn" id="refresh-visitors">
+                                    <i class="fas fa-sync-alt"></i>
+                                    <span>Refresh Visitors List</span>
+                                </button>
+                                <button class="quick-action-btn" id="view-today-stats">
+                                    <i class="fas fa-calendar-day"></i>
+                                    <span>View Today's Statistics</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Today's Statistics Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2><i class="fas fa-chart-pie"></i> Today's Statistics</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="stats-grid">
+                                <div class="stat-card stat-green">
+                                    <div class="stat-info">
+                                        <p class="stat-label">Approved</p>
+                                        <p class="stat-value" id="approved-count">0</p>
+                                    </div>
+                                    <i class="fas fa-check stat-icon"></i>
+                                </div>
+                                <div class="stat-card stat-red">
+                                    <div class="stat-info">
+                                        <p class="stat-label">Declined</p>
+                                        <p class="stat-value" id="declined-count">0</p>
+                                    </div>
+                                    <i class="fas fa-times stat-icon"></i>
+                                </div>
+                                <div class="stat-card stat-blue">
+                                    <div class="stat-info">
+                                        <p class="stat-label">Pending</p>
+                                        <p class="stat-value" id="pending-count">0</p>
+                                    </div>
+                                    <i class="fas fa-clock stat-icon"></i>
+                                </div>
+                                <div class="stat-card stat-purple">
+                                    <div class="stat-info">
+                                        <p class="stat-label">Total</p>
+                                        <p class="stat-value" id="total-today">0</p>
+                                    </div>
+                                    <i class="fas fa-users stat-icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Entry Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2><i class="fas fa-clock"></i> Recent Approvals</h2>
+                        </div>
+                        <div class="card-body">
+                            <div id="recent-approvals">
+                                <div class="empty-state">
+                                    <i class="fas fa-check-circle"></i>
+                                    <p>No recent approvals</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </main>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        // Security Dashboard JavaScript
+        let currentVisitorId = null;
+
+        document.addEventListener('DOMContentLoaded', async function () {
+            // Check authentication
+            const role = getUserRole();
+            if (!isAuthenticated() || (role !== 'security' && role !== 'admin')) {
+                showNotification('Access denied. Insufficient permissions.', 'error');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
+                return;
+            }
+
+            // Set welcome message
+            const user = getUser();
+            if (user) {
+                document.getElementById('security-welcome').textContent = `Welcome, ${user.name}`;
+            }
+
+            // Load initial data
+            await loadRecentVisitors();
+            await loadTodayStats();
+
+            // Set max date for history picker to today
+            const todayStr = new Date().toISOString().split('T')[0];
+            const datePicker = document.getElementById('history-date');
+            if (datePicker) {
+                datePicker.max = todayStr;
+                datePicker.addEventListener('change', loadVisitorHistory);
+            }
+
+            // Set up event listeners
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            // Check Visitor Button
+            document.getElementById('check-visitor-btn').addEventListener('click', handleCheckVisitor);
+            document.getElementById('visitor-phone-check').addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') handleCheckVisitor();
+            });
+
+            // Visitor action buttons
+            document.getElementById('approve-visitor-btn').addEventListener('click', () => handleUpdateVisitorStatus('checked_in'));
+            document.getElementById('decline-visitor-btn').addEventListener('click', () => handleUpdateVisitorStatus('declined'));
+            document.getElementById('checkout-visitor-btn').addEventListener('click', () => handleUpdateVisitorStatus('checked_out'));
+
+            // Add visitor flow
+            document.getElementById('show-add-visitor-form').addEventListener('click', showAddVisitorForm);
+            document.getElementById('create-new-visit-btn').addEventListener('click', () => {
+                showAddVisitorForm();
+                // We use global variables or pull from DOM since visitor data might not be easily accessible here
+                const name = document.getElementById('detail-name').textContent;
+                const phone = document.getElementById('detail-phone').textContent;
+                if (name && name !== '-') document.getElementById('visitor-name').value = name;
+                if (phone && phone !== '-') document.getElementById('visitor-contact').value = phone;
+
+                const flat = document.getElementById('detail-flat').textContent;
+                const purpose = document.getElementById('detail-purpose').textContent;
+
+                if (flat && flat !== '-') document.getElementById('visitor-flat').value = flat;
+
+                if (purpose && purpose !== '-') {
+                    const purposeSelect = document.getElementById('visitor-purpose');
+                    let optionFound = false;
+                    for (let i = 0; i < purposeSelect.options.length; i++) {
+                        if (purposeSelect.options[i].value === purpose) {
+                            purposeSelect.selectedIndex = i;
+                            optionFound = true;
+                            break;
+                        }
+                    }
+                    if (!optionFound) {
+                        purposeSelect.value = 'Other';
+                        document.getElementById('other-purpose-container').style.display = 'block';
+                        document.getElementById('other-purpose').value = purpose;
+                    } else {
+                        document.getElementById('other-purpose-container').style.display = 'none';
+                    }
+                }
+            });
+            document.getElementById('cancel-add-visitor').addEventListener('click', cancelAddVisitor);
+            document.getElementById('new-visitor-form').addEventListener('submit', handleAddVisitor);
+
+            // Purpose select change
+            document.getElementById('visitor-purpose').addEventListener('change', function () {
+                const otherContainer = document.getElementById('other-purpose-container');
+                otherContainer.style.display = this.value === 'Other' ? 'block' : 'none';
+            });
+
+            // Quick actions
+            document.getElementById('check-another-visitor').addEventListener('click', resetVisitorCheck);
+            document.getElementById('check-another-after-process').addEventListener('click', resetVisitorCheck);
+            document.getElementById('refresh-visitors').addEventListener('click', loadRecentVisitors);
+            document.getElementById('view-today-stats').addEventListener('click', loadTodayStats);
+
+            // Logout
+            document.getElementById('security-logout').addEventListener('click', handleLogout);
+        }
+
+        async function handleCheckVisitor() {
+            const phone = document.getElementById('visitor-phone-check').value.trim();
+
+            if (!phone) {
+                showNotification('Please enter a phone number.', 'error');
+                return;
+            }
+
+            if (!utils.validatePhone(phone)) {
+                showNotification('Please enter a valid 10-digit mobile number.', 'error');
+                return;
+            }
+
+            try {
+                showNotification('Checking visitor...', 'info');
+
+                const response = await api.security.checkVisitor(phone);
+
+                // Hide all result sections first
+                hideAllResultSections();
+
+                if (response.success) {
+                    if (response.data.found) {
+                        const visitor = response.data.visitor;
+                        currentVisitorId = visitor.id;
+
+                        // Display visitor details
+                        document.getElementById('detail-name').textContent = visitor.name;
+                        document.getElementById('detail-phone').textContent = visitor.phone;
+                        document.getElementById('detail-flat').textContent = visitor.flatNumber;
+                        document.getElementById('detail-purpose').textContent = visitor.otherPurpose || visitor.purpose;
+                        document.getElementById('detail-resident').textContent = visitor.resident ? visitor.resident.name : 'N/A';
+
+                        const residentMobile = visitor.resident && visitor.resident.mobile ? visitor.resident.mobile : '-';
+                        document.getElementById('detail-resident-contact').textContent = residentMobile;
+
+                        // Always show details initially when visitor is found
+                        document.getElementById('visitor-details').style.display = 'block';
+                        document.getElementById('visitor-processed-message').style.display = 'none';
+
+                        // Hide all buttons initially
+                        document.getElementById('approve-visitor-btn').style.display = 'none';
+                        document.getElementById('decline-visitor-btn').style.display = 'none';
+                        document.getElementById('checkout-visitor-btn').style.display = 'none';
+
+                        if (visitor.status === 'pending') {
+                            document.getElementById('visitor-action-buttons').style.display = 'flex';
+                            document.getElementById('approve-visitor-btn').style.display = 'block';
+                            document.getElementById('decline-visitor-btn').style.display = 'block';
+                        } else if (visitor.status === 'checked_in') {
+                            document.getElementById('visitor-action-buttons').style.display = 'flex';
+                            document.getElementById('checkout-visitor-btn').style.display = 'block';
+                        } else {
+                            // checked_out or declined
+                            document.getElementById('visitor-action-buttons').style.display = 'none';
+                            document.getElementById('visitor-processed-message').style.display = 'block';
+                            document.getElementById('prev-visit-status').textContent = visitor.status;
+                        }
+                    } else {
+                        document.getElementById('add-visitor-prompt').style.display = 'block';
+                        document.getElementById('visitor-contact').value = phone;
+                    }
+                } else {
+                    showNotification(response.message || 'Error checking visitor', 'error');
+                }
+            } catch (error) {
+                console.error('Error checking visitor:', error);
+                showNotification(error.message || 'Server error. Please try again.', 'error');
+            }
+        }
+
+        async function handleUpdateVisitorStatus(status) {
+            try {
+                // If it's a global action, currentVisitorId must be populated
+                const targetId = typeof status === 'object' ? status.id : currentVisitorId;
+                const statusStr = typeof status === 'object' ? status.status : status;
+
+                if (!targetId) {
+                    showNotification('No visitor selected', 'error');
+                    return;
+                }
+
+                showNotification('Updating visitor...', 'info');
+
+                const response = await api.security.updateVisitorStatus(targetId, statusStr);
+
+                if (response.success) {
+                    showNotification(`Visitor ${statusStr} successfully!`, 'success');
+
+                    // Show SMS success if applicable
+                    if (response.data && response.data.smsSent) {
+                        setTimeout(() => {
+                            showNotification('SMS Sent to Resident Successfully!', 'success');
+                        }, 500);
+                    }
+
+                    // Reset and refresh
+                    resetVisitorCheck();
+                    await loadRecentVisitors();
+                    await loadTodayStats();
+
+                    const datePicker = document.getElementById('history-date');
+                    if (datePicker && datePicker.value) {
+                        datePicker.dispatchEvent(new Event('change'));
+                    }
+                } else {
+                    showNotification(response.message || `Failed to ${statusStr} visitor`, 'error');
+                }
+            } catch (error) {
+                console.error('Error updating visitor status:', error);
+                showNotification(error.message || 'Server error. Please try again.', 'error');
+            }
+        }
+
+        async function handleAddVisitor(e) {
+            e.preventDefault();
+
+            const visitorData = {
+                name: document.getElementById('visitor-name')?.value?.trim(),
+                phone: document.getElementById('visitor-contact')?.value?.trim(),
+                flatNumber: document.getElementById('visitor-flat')?.value?.trim(),
+                purpose: document.getElementById('visitor-purpose')?.value,
+                vehicleNumber: document.getElementById('vehicle-number')?.value?.trim() || undefined,
+                idProof: document.getElementById('id-proof')?.value?.trim() || undefined,
+                notes: document.getElementById('visitor-notes')?.value?.trim() || undefined
+            };
+
+            if (visitorData.purpose === 'Other') {
+                const otherPurpose = document.getElementById('other-purpose').value.trim();
+                if (!otherPurpose) {
+                    showNotification('Please specify the purpose', 'error');
+                    return;
+                }
+                visitorData.otherPurpose = otherPurpose;
+            }
+
+            // Validate inputs
+            if (!visitorData.name || !visitorData.phone || !visitorData.flatNumber || !visitorData.purpose) {
+                showNotification('Please fill all required fields.', 'error');
+                return;
+            }
+
+            if (!utils.validatePhone(visitorData.phone)) {
+                showNotification('Please enter a valid 10-digit phone number.', 'error');
+                return;
+            }
+
+            try {
+                showNotification('Adding visitor...', 'info');
+
+                const response = await api.security.addVisitor(visitorData);
+
+                if (response.success) {
+                    showNotification('Visitor added successfully!', 'success');
+
+                    // Reset form and hide
+                    document.getElementById('new-visitor-form').reset();
+                    document.getElementById('other-purpose-container').style.display = 'none';
+
+                    document.getElementById('add-visitor-form').style.display = 'none';
+                    document.getElementById('visitor-contact').value = '';
+                    document.getElementById('visitor-phone-check').value = visitorData.phone;
+                    await handleCheckVisitor();
+
+                    // Refresh lists
+                    await loadRecentVisitors();
+                    await loadTodayStats();
+
+                    const datePicker = document.getElementById('history-date');
+                    if (datePicker && datePicker.value) {
+                        datePicker.dispatchEvent(new Event('change'));
+                    }
+                } else {
+                    showNotification(response.message || 'Failed to add visitor', 'error');
+                }
+            } catch (error) {
+                console.error('Error adding visitor:', error);
+                showNotification(error.message || 'Server error. Please try again.', 'error');
+            }
+        }
+
+        async function loadRecentVisitors() {
+            try {
+                const response = await api.security.getRecentVisitors();
+
+                const tbody = document.getElementById('recent-visitors');
+
+                if (response.success && response.data.visitors) {
+                    const visitors = response.data.visitors;
+
+                    if (visitors.length === 0) {
+                        tbody.innerHTML = `
+                            <tr>
+                                <td colspan="8" style="text-align: center; padding: 30px; color: #7f8c8d;">
+                                    <i class="fas fa-users" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
+                                    <p>No visitors found yet.</p>
+                                </td>
+                            </tr>
+                        `;
+                    } else {
+                        tbody.innerHTML = visitors.slice(0, 10).map(visitor => `
+                            <tr>
+                                <td>${escapeHtml(visitor.name)}</td>
+                                <td>${escapeHtml(visitor.phone)}</td>
+                                <td>${escapeHtml(visitor.flatNumber)}</td>
+                                <td>${escapeHtml(visitor.otherPurpose || visitor.purpose)}</td>
+                                <td><span class="status-badge status-${visitor.status}">${visitor.status.replace('_', ' ')}</span></td>
+                                <td>${formatTime(visitor.checkInTime || visitor.createdAt)}</td>
+                                <td>${visitor.checkOutTime ? formatTime(visitor.checkOutTime) : '-'}</td>
+                                <td>
+                                    ${visitor.status === 'checked_in'
+                                ? `<button class="btn-sm btn-secondary checkout-btn" data-id="${visitor._id}">Checkout</button>`
+                                : '-'}
+                                </td>
+                            </tr>
+                        `).join('');
+
+                        // Attach event listeners to new checkout buttons
+                        document.querySelectorAll('.checkout-btn').forEach(btn => {
+                            btn.addEventListener('click', (e) => {
+                                handleUpdateVisitorStatus({ id: e.target.dataset.id, status: 'checked_out' });
+                            });
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading recent visitors:', error);
+                showNotification('Failed to load recent visitors', 'error');
+            }
+        }
+
+        async function loadTodayStats() {
+            try {
+                const response = await api.security.getTodayVisitors();
+
+                if (response.success && response.data.stats) {
+                    const stats = response.data.stats;
+                    document.getElementById('approved-count').textContent = stats.approved || 0;
+                    document.getElementById('declined-count').textContent = stats.declined || 0;
+                    document.getElementById('pending-count').textContent = stats.pending || 0;
+                    document.getElementById('total-today').textContent = stats.total || 0;
+
+                    if (response.data.visitors) {
+                        const checkedInVisitors = response.data.visitors
+                            .filter(v => v.status === 'checked_in')
+                            .slice(0, 5);
+
+                        const approvalsContainer = document.getElementById('recent-approvals');
+
+                        if (checkedInVisitors.length === 0) {
+                            approvalsContainer.innerHTML = `
+                                <div class="empty-state">
+                                    <i class="fas fa-check-circle"></i>
+                                    <p>No recent check-ins</p>
+                                </div>
+                            `;
+                        } else {
+                            approvalsContainer.innerHTML = checkedInVisitors.map(visitor => `
+                                <div class="activity-item">
+                                    <i class="fas fa-user-check activity-icon" style="color: #27ae60;"></i>
+                                    <div class="activity-info">
+                                        <p class="activity-title">${escapeHtml(visitor.name)}</p>
+                                        <p class="activity-time">Flat ${escapeHtml(visitor.flatNumber)} • ${formatTime(visitor.createdAt)}</p>
+                                    </div>
+                                </div>
+                            `).join('');
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading today stats:', error);
+            }
+        }
+
+        function showAddVisitorForm() {
+            hideAllResultSections();
+            document.getElementById('add-visitor-form').style.display = 'block';
+        }
+
+        function cancelAddVisitor() {
+            document.getElementById('add-visitor-form').style.display = 'none';
+            document.getElementById('new-visitor-form').reset();
+            document.getElementById('other-purpose-container').style.display = 'none';
+            resetVisitorCheck();
+        }
+
+        function resetVisitorCheck() {
+            document.getElementById('visitor-phone-check').value = '';
+            hideAllResultSections();
+            currentVisitorId = null;
+        }
+
+        function hideAllResultSections() {
+            document.getElementById('visitor-details').style.display = 'none';
+            document.getElementById('add-visitor-prompt').style.display = 'none';
+            document.getElementById('add-visitor-form').style.display = 'none';
+            document.getElementById('visitor-processed-message').style.display = 'none';
+        }
+
+        function handleLogout() {
+            logout();
+            showNotification('Logged out successfully.', 'success');
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1000);
+        }
+
+        function formatTime(timestamp) {
+            if (!timestamp) return '-';
+            const date = new Date(timestamp);
+            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function escapeHtml(unsafe) {
+            if (!unsafe) return unsafe;
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+        async function loadVisitorHistory(e) {
+            const selectedDate = e.target.value;
+            if (!selectedDate) return;
+
+            const tbody = document.getElementById('history-visitors-list');
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="6" style="text-align: center; padding: 30px;">
+                        <i class="fas fa-spinner fa-spin"></i> Loading...
+                    </td>
+                </tr>
+            `;
+
+            try {
+                const response = await api.security.getVisitorsByDate(selectedDate);
+                if (response.success && response.data.visitors) {
+                    const visitors = response.data.visitors;
+                    if (visitors.length === 0) {
+                        tbody.innerHTML = `
+                            <tr>
+                                <td colspan="6" style="text-align: center; padding: 30px; color: #7f8c8d;">
+                                    <p>No visitors found on ${selectedDate}.</p>
+                                </td>
+                            </tr>
+                        `;
+                    } else {
+                        tbody.innerHTML = visitors.map(visitor => `
+                            <tr>
+                                <td>
+                                    <div style="font-weight: 500;">${escapeHtml(visitor.name)}</div>
+                                    <div style="font-size: 0.8rem; color: #7f8c8d;">${escapeHtml(visitor.phone || '')}</div>
+                                </td>
+                                <td>${escapeHtml(visitor.flatNumber)}</td>
+                                <td><span class="status-badge status-${visitor.status}">${visitor.status.replace('_', ' ')}</span></td>
+                                <td>${visitor.checkInTime ? formatTime(visitor.checkInTime) : formatTime(visitor.createdAt)}</td>
+                                <td>${visitor.checkOutTime ? formatTime(visitor.checkOutTime) : '-'}</td>
+                                <td>
+                                    ${visitor.status === 'checked_in'
+                                ? `<button class="btn-sm btn-secondary history-checkout-btn" data-id="${visitor._id}">Checkout</button>`
+                                : '-'}
+                                </td>
+                            </tr>
+                        `).join('');
+
+                        // Attach event listeners to new checkout buttons
+                        document.querySelectorAll('.history-checkout-btn').forEach(btn => {
+                            btn.addEventListener('click', (e) => {
+                                handleUpdateVisitorStatus({ id: e.target.dataset.id, status: 'checked_out' });
+                            });
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading history:', error);
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 30px; color: #e74c3c;">
+                            <p>Failed to load history.</p>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+    </script>
+</body>
+
+</html>

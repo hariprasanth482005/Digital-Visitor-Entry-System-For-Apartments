@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resident Dashboard - Digital Visitor Entry System</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="notification-container" id="notificationContainer"></div>
+        
+        <nav class="navbar resident-nav">
+            <div class="nav-container">
+                <div class="nav-brand">
+                    <i class="fas fa-home"></i>
+                    <h1>Resident Dashboard</h1>
+                </div>
+                <div class="nav-actions">
+                    <span class="user-welcome" id="resident-welcome">Welcome, Resident</span>
+                    <button class="btn-logout" id="resident-logout">Logout</button>
+                </div>
+            </div>
+        </nav>
+        
+        <main class="dashboard-content">
+            <div class="dashboard-grid">
+                <!-- Left Column -->
+                <div class="dashboard-column">
+                    <!-- Welcome Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2><i class="fas fa-home"></i> Welcome Home!</h2>
+                        </div>
+                        <div class="card-body">
+                            <div id="resident-details" class="resident-info">
+                                <!-- Resident details will be loaded here -->
+                                <p>Loading your information...</p>
+                            </div>
+                            
+                            <div class="welcome-section">
+                                <h3 class="section-title">
+                                    <i class="fas fa-bell"></i> Visitor Notifications
+                                    <span class="notification-badge" id="unread-count">0</span>
+                                </h3>
+                                <div id="visitor-notifications">
+                                    <!-- Notifications will be loaded here -->
+                                    <div class="empty-state">
+                                        <i class="fas fa-bell"></i>
+                                        <p>No visitor notifications</p>
+                                        <small>When visitors arrive, you'll see notifications here.</small>
+                                    </div>
+                                </div>
+                                <button class="btn-link" id="mark-all-read" style="margin-top: 10px; display: none;">
+                                    <i class="fas fa-check-double"></i> Mark all as read
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visitor History Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2><i class="fas fa-history"></i> Visitor History</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-container">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Visitor Name</th>
+                                            <th>Contact</th>
+                                            <th>Purpose</th>
+                                            <th>Status</th>
+                                            <th>Date & Time</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="visitor-history">
+                                        <tr>
+                                            <td colspan="5" style="text-align: center; padding: 30px;">
+                                                <i class="fas fa-spinner fa-spin"></i> Loading history...
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right Column -->
+                <div class="dashboard-column">
+                    <!-- Account Management Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2><i class="fas fa-user-cog"></i> Account Management</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="account-info">
+                                <div class="info-item">
+                                    <span class="info-label">Name:</span>
+                                    <span class="info-value" id="profile-name">-</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Flat Number:</span>
+                                    <span class="info-value" id="profile-flat">-</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Mobile:</span>
+                                    <span class="info-value" id="profile-mobile">-</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Email:</span>
+                                    <span class="info-value" id="profile-email">-</span>
+                                </div>
+                            </div>
+                            
+                            <div class="account-actions">
+                                <button class="account-action-btn" id="change-mobile-btn">
+                                    <i class="fas fa-mobile-alt"></i>
+                                    <div class="action-info">
+                                        <p class="action-title">Change Mobile Number</p>
+                                        <p class="action-desc">Update your registered mobile number</p>
+                                    </div>
+                                    <i class="fas fa-chevron-right action-arrow"></i>
+                                </button>
+                                <button class="account-action-btn" id="change-password-btn">
+                                    <i class="fas fa-key"></i>
+                                    <div class="action-info">
+                                        <p class="action-title">Change Password</p>
+                                        <p class="action-desc">Update your login password</p>
+                                    </div>
+                                    <i class="fas fa-chevron-right action-arrow"></i>
+                                </button>
+                                <button class="account-action-btn" id="update-email-btn">
+                                    <i class="fas fa-envelope"></i>
+                                    <div class="action-info">
+                                        <p class="action-title" id="email-btn-title">Enter Email</p>
+                                        <p class="action-desc" id="email-btn-desc">Add your email address</p>
+                                    </div>
+                                    <i class="fas fa-chevron-right action-arrow"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Stats Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2><i class="fas fa-chart-line"></i> Quick Stats</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="stats-grid-mini">
+                                <div class="stat-mini">
+                                    <span class="stat-mini-label">Total Visits</span>
+                                    <span class="stat-mini-value" id="total-visits">0</span>
+                                </div>
+                                <div class="stat-mini">
+                                    <span class="stat-mini-label">Approved</span>
+                                    <span class="stat-mini-value" id="total-approved">0</span>
+                                </div>
+                                <div class="stat-mini">
+                                    <span class="stat-mini-label">Pending</span>
+                                    <span class="stat-mini-value" id="total-pending">0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Change Mobile Number Modal -->
+    <div id="change-mobile-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-mobile-alt"></i> Change Mobile Number</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="current-mobile">Current Mobile Number</label>
+                    <input type="text" id="current-mobile" readonly class="readonly-field">
+                </div>
+                <div class="form-group">
+                    <label for="new-mobile">New Mobile Number</label>
+                    <input type="text" id="new-mobile" placeholder="Enter new 10-digit mobile number">
+                </div>
+                <div id="mobile-otp-section" style="display: none;">
+                    <div class="form-group">
+                        <label for="mobile-otp">Enter OTP</label>
+                        <input type="text" id="mobile-otp" placeholder="Enter 6-digit OTP">
+                        <small class="form-hint">OTP has been sent to your new mobile number</small>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn-secondary modal-cancel">Cancel</button>
+                    <button class="btn-primary" id="request-mobile-otp">Request OTP</button>
+                    <button class="btn-primary" id="update-mobile-btn" style="display: none;">Update Mobile</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Change Password Modal -->
+    <div id="change-password-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-key"></i> Change Password</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="current-password">Current Password</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="current-password" placeholder="Enter current password">
+                        <i class="fas fa-eye toggle-password"></i>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="new-password-resident">New Password</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="new-password-resident" placeholder="Enter new password">
+                        <i class="fas fa-eye toggle-password"></i>
+                    </div>
+                    <small class="form-hint">Minimum 6 characters</small>
+                </div>
+                <div class="form-group">
+                    <label for="confirm-password">Confirm New Password</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="confirm-password" placeholder="Confirm new password">
+                        <i class="fas fa-eye toggle-password"></i>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn-secondary modal-cancel">Cancel</button>
+                    <button class="btn-primary" id="update-password-btn">Update Password</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Update Email Modal -->
+    <div id="update-email-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-envelope"></i> <span id="email-modal-title">Enter Email</span></h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group" id="current-email-group" style="display: none;">
+                    <label>Current Email</label>
+                    <input type="text" id="current-email-display" readonly class="readonly-field">
+                </div>
+                <div class="form-group">
+                    <label for="new-email-input">New Email Address</label>
+                    <input type="email" id="new-email-input" placeholder="Enter your email address">
+                </div>
+                <div class="form-actions">
+                    <button class="btn-secondary modal-cancel">Cancel</button>
+                    <button class="btn-primary" id="save-email-btn">Save Email</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        // Resident Dashboard JavaScript
+        let currentResident = null;
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Check authentication
+            if (!isAuthenticated() || getUserRole() !== 'resident') {
+                showNotification('Please login as resident to access this page.', 'error');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
+                return;
+            }
+
+            // Get current user
+            currentResident = getUser();
+            
+            // Set welcome message
+            if (currentResident) {
+                document.getElementById('resident-welcome').textContent = `Welcome, ${currentResident.name}`;
+                updateProfileInfo();
+            }
+
+            // Load initial data
+            await loadNotifications();
+            await loadVisitorHistory();
+            await loadStats();
+
+            // Set up event listeners
+            setupEventListeners();
+
+            // Setup password visibility toggles
+            document.querySelectorAll('.toggle-password').forEach(icon => {
+                icon.addEventListener('click', function() {
+                    const input = this.previousElementSibling;
+                    const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                    input.setAttribute('type', type);
+                    this.classList.toggle('fa-eye');
+                    this.classList.toggle('fa-eye-slash');
+                });
+            });
+        });
+
+        function setupEventListeners() {
+            // Change Mobile Number
+            document.getElementById('change-mobile-btn').addEventListener('click', openChangeMobileModal);
+            
+            // Change Password
+            document.getElementById('change-password-btn').addEventListener('click', openChangePasswordModal);
+
+            // Update Email
+            document.getElementById('update-email-btn').addEventListener('click', openUpdateEmailModal);
+            document.getElementById('save-email-btn').addEventListener('click', handleUpdateEmail);
+            
+            // Modal close buttons
+            document.querySelectorAll('.modal-close, .modal-cancel').forEach(button => {
+                button.addEventListener('click', closeModals);
+            });
+
+            // Mobile change OTP
+            document.getElementById('request-mobile-otp').addEventListener('click', handleRequestMobileOTP);
+            document.getElementById('update-mobile-btn').addEventListener('click', handleUpdateMobile);
+
+            // Password change
+            document.getElementById('update-password-btn').addEventListener('click', handleChangePassword);
+
+            // Mark all as read
+            document.getElementById('mark-all-read').addEventListener('click', handleMarkAllRead);
+
+            // Logout
+            document.getElementById('resident-logout').addEventListener('click', handleLogout);
+
+            // Click on window to close modal
+            window.addEventListener('click', function(event) {
+                if (event.target.classList.contains('modal')) {
+                    closeModals();
+                }
+            });
+        }
+
+        function updateProfileInfo() {
+            document.getElementById('profile-name').textContent = currentResident.name || '-';
+            document.getElementById('profile-flat').textContent = currentResident.flatNumber || '-';
+            document.getElementById('profile-mobile').textContent = currentResident.mobile || '-';
+            const emailVal = currentResident.email;
+            document.getElementById('profile-email').textContent = emailVal || 'Not provided';
+            // Update email btn label
+            if (emailVal) {
+                document.getElementById('email-btn-title').textContent = 'Update Email';
+                document.getElementById('email-btn-desc').textContent = 'Change your registered email address';
+            } else {
+                document.getElementById('email-btn-title').textContent = 'Enter Email';
+                document.getElementById('email-btn-desc').textContent = 'Add your email address';
+            }
+            
+            document.getElementById('current-mobile').value = currentResident.mobile || '';
+            
+            document.getElementById('resident-details').innerHTML = `
+                <div class="welcome-message">
+                    <i class="fas fa-home" style="font-size: 2rem; color: #9b59b6; margin-bottom: 10px;"></i>
+                    <h3>Welcome back, <strong>${escapeHtml(currentResident.name)}</strong>!</h3>
+                    <p>You're logged in from <strong>${escapeHtml(currentResident.flatNumber)}</strong>.</p>
+                </div>
+            `;
+        }
+
+        async function loadNotifications() {
+            try {
+                const response = await api.resident.getNotifications();
+                
+                const container = document.getElementById('visitor-notifications');
+                const markAllBtn = document.getElementById('mark-all-read');
+                
+                if (response.success && response.data.notifications) {
+                    const notifications = response.data.notifications;
+                    const unreadCount = notifications.filter(n => !n.isRead).length;
+                    
+                    document.getElementById('unread-count').textContent = unreadCount;
+                    
+                    if (unreadCount > 0) {
+                        markAllBtn.style.display = 'inline-block';
+                    } else {
+                        markAllBtn.style.display = 'none';
+                    }
+                    
+                    if (notifications.length === 0) {
+                        container.innerHTML = `
+                            <div class="empty-state">
+                                <i class="fas fa-bell"></i>
+                                <p>No visitor notifications</p>
+                                <small>When visitors arrive, you'll see notifications here.</small>
+                            </div>
+                        `;
+                    } else {
+                        container.innerHTML = notifications.slice(0, 5).map(notification => `
+                            <div class="notification-item ${notification.isRead ? '' : 'unread'}" data-id="${notification._id}">
+                                <div class="notification-icon ${notification.type.includes('approved') ? 'notification-success' : 'notification-error'}">
+                                    <i class="fas ${notification.type.includes('approved') ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+                                </div>
+                                <div class="notification-content">
+                                    <p class="notification-message">${escapeHtml(notification.message)}</p>
+                                    <p class="notification-time">${formatDateTime(notification.createdAt)}</p>
+                                </div>
+                                ${!notification.isRead ? '<span class="unread-dot"></span>' : ''}
+                            </div>
+                        `).join('');
+
+                        // Add click handlers for notifications
+                        document.querySelectorAll('.notification-item').forEach(item => {
+                            item.addEventListener('click', () => markNotificationAsRead(item.dataset.id));
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading notifications:', error);
+            }
+        }
+
+        async function loadVisitorHistory() {
+            try {
+                const response = await api.resident.getVisitorHistory();
+                
+                const tbody = document.getElementById('visitor-history');
+                
+                if (response.success && response.data.visitors) {
+                    const visitors = response.data.visitors;
+                    
+                    if (visitors.length === 0) {
+                        tbody.innerHTML = `
+                            <tr>
+                                <td colspan="5" style="text-align: center; padding: 30px; color: #7f8c8d;">
+                                    <i class="fas fa-history" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
+                                    <p>No visitor history yet.</p>
+                                </td>
+                            </tr>
+                        `;
+                    } else {
+                        tbody.innerHTML = visitors.slice(0, 10).map(visitor => `
+                            <tr>
+                                <td>${escapeHtml(visitor.name)}</td>
+                                <td>${escapeHtml(visitor.phone)}</td>
+                                <td>${escapeHtml(visitor.otherPurpose || visitor.purpose)}</td>
+                                <td><span class="status-badge status-${visitor.status}">${visitor.status}</span></td>
+                                <td>${formatDateTime(visitor.createdAt)}</td>
+                            </tr>
+                        `).join('');
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading visitor history:', error);
+            }
+        }
+
+        async function loadStats() {
+            try {
+                const response = await api.resident.getVisitorHistory();
+                
+                if (response.success && response.data.visitors) {
+                    const visitors = response.data.visitors;
+                    
+                    document.getElementById('total-visits').textContent = visitors.length;
+                    document.getElementById('total-approved').textContent = visitors.filter(v => v.status === 'approved').length;
+                    document.getElementById('total-pending').textContent = visitors.filter(v => v.status === 'pending').length;
+                }
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        async function markNotificationAsRead(notificationId) {
+            try {
+                const response = await api.resident.markNotificationRead(notificationId);
+                
+                if (response.success) {
+                    await loadNotifications();
+                }
+            } catch (error) {
+                console.error('Error marking notification as read:', error);
+            }
+        }
+
+        async function handleMarkAllRead() {
+            try {
+                const response = await api.resident.markAllNotificationsRead();
+                
+                if (response.success) {
+                    showNotification('All notifications marked as read', 'success');
+                    await loadNotifications();
+                }
+            } catch (error) {
+                console.error('Error marking all as read:', error);
+                showNotification('Failed to mark all as read', 'error');
+            }
+        }
+
+        function openChangeMobileModal() {
+            document.getElementById('change-mobile-modal').style.display = 'flex';
+        }
+
+        function openChangePasswordModal() {
+            document.getElementById('change-password-modal').style.display = 'flex';
+        }
+
+        function openUpdateEmailModal() {
+            const emailVal = currentResident.email;
+            const hasEmail = !!(emailVal);
+            document.getElementById('email-modal-title').textContent = hasEmail ? 'Update Email' : 'Enter Email';
+            if (hasEmail) {
+                document.getElementById('current-email-group').style.display = 'block';
+                document.getElementById('current-email-display').value = emailVal;
+            } else {
+                document.getElementById('current-email-group').style.display = 'none';
+            }
+            document.getElementById('new-email-input').value = '';
+            document.getElementById('update-email-modal').style.display = 'flex';
+        }
+
+        async function handleUpdateEmail() {
+            const newEmail = document.getElementById('new-email-input').value.trim();
+
+            if (!newEmail) {
+                showNotification('Please enter an email address.', 'error');
+                return;
+            }
+
+            // Basic email validation
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)) {
+                showNotification('Please enter a valid email address.', 'error');
+                return;
+            }
+
+            try {
+                showNotification('Saving email...', 'info');
+
+                const response = await api.resident.updateEmail(newEmail);
+
+                if (response.success) {
+                    showNotification('Email updated successfully!', 'success');
+                    // Update local user data
+                    currentResident.email = newEmail;
+                    localStorage.setItem('user', JSON.stringify(currentResident));
+                    updateProfileInfo();
+                    closeModals();
+                } else {
+                    showNotification(response.message || 'Failed to update email', 'error');
+                }
+            } catch (error) {
+                console.error('Error updating email:', error);
+                showNotification(error.message || 'Server error. Please try again.', 'error');
+            }
+        }
+
+        function closeModals() {
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.style.display = 'none';
+            });
+            
+            // Reset mobile change form
+            document.getElementById('new-mobile').value = '';
+            document.getElementById('mobile-otp').value = '';
+            document.getElementById('mobile-otp-section').style.display = 'none';
+            document.getElementById('request-mobile-otp').style.display = 'inline-block';
+            document.getElementById('update-mobile-btn').style.display = 'none';
+            
+            // Reset password change form
+            document.getElementById('current-password').value = '';
+            document.getElementById('new-password-resident').value = '';
+            document.getElementById('confirm-password').value = '';
+
+            // Reset email form
+            document.getElementById('new-email-input').value = '';
+        }
+
+        async function handleRequestMobileOTP() {
+            const newMobile = document.getElementById('new-mobile').value.trim();
+
+            if (!newMobile) {
+                showNotification('Please enter a new mobile number.', 'error');
+                return;
+            }
+
+            if (!utils.validatePhone(newMobile)) {
+                showNotification('Please enter a valid 10-digit mobile number.', 'error');
+                return;
+            }
+
+            if (newMobile === currentResident.mobile) {
+                showNotification('New mobile number cannot be same as current number.', 'error');
+                return;
+            }
+
+            try {
+                showNotification('Sending OTP...', 'info');
+
+                // Send OTP via our backend (Twilio)
+                const response = await api.resident.sendMobileOTP(newMobile);
+
+                if (response.success) {
+                    document.getElementById('mobile-otp-section').style.display = 'block';
+                    document.getElementById('request-mobile-otp').style.display = 'none';
+                    document.getElementById('update-mobile-btn').style.display = 'inline-block';
+                    
+                    showNotification('OTP sent to your new mobile number!', 'success');
+                } else {
+                    showNotification(response.message || 'Failed to send OTP', 'error');
+                }
+            } catch (error) {
+                console.error('Error sending OTP:', error);
+                showNotification(error.message || 'Server error. Please try again.', 'error');
+            }
+        }
+
+        async function handleUpdateMobile() {
+            const newMobile = document.getElementById('new-mobile').value.trim();
+            const otp = document.getElementById('mobile-otp').value.trim();
+
+            if (!otp) {
+                showNotification('Please enter the OTP.', 'error');
+                return;
+            }
+
+            if (otp.length !== 6) {
+                showNotification('Please enter a valid 6-digit OTP.', 'error');
+                return;
+            }
+
+            try {
+                showNotification('Updating mobile number...', 'info');
+
+                // Update mobile via our backend
+                const response = await api.resident.changeMobile(newMobile, otp);
+
+                if (response.success) {
+                    showNotification('Mobile number updated successfully!', 'success');
+                    
+                    // Update local user data
+                    currentResident.mobile = newMobile;
+                    localStorage.setItem('user', JSON.stringify(currentResident));
+                    
+                    // Update display
+                    document.getElementById('profile-mobile').textContent = newMobile;
+                    
+                    setTimeout(() => {
+                        closeModals();
+                    }, 1000);
+                } else {
+                    showNotification(response.message || 'Failed to update mobile number', 'error');
+                }
+            } catch (error) {
+                console.error('Error updating mobile:', error);
+                showNotification(error.message || 'Server error. Please try again.', 'error');
+            }
+        }
+
+        async function handleChangePassword() {
+            const currentPassword = document.getElementById('current-password').value;
+            const newPassword = document.getElementById('new-password-resident').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                showNotification('Please fill all password fields.', 'error');
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                showNotification('New passwords do not match.', 'error');
+                return;
+            }
+
+            if (!utils.validatePassword(newPassword)) {
+                showNotification('Password must be at least 6 characters long.', 'error');
+                return;
+            }
+
+            try {
+                showNotification('Changing password...', 'info');
+
+                const response = await api.resident.changePassword(currentPassword, newPassword);
+
+                if (response.success) {
+                    showNotification('Password changed successfully!', 'success');
+                    closeModals();
+                } else {
+                    showNotification(response.message || 'Failed to change password', 'error');
+                }
+            } catch (error) {
+                console.error('Error changing password:', error);
+                showNotification(error.message || 'Server error. Please try again.', 'error');
+            }
+        }
+
+        function handleLogout() {
+            logout();
+            showNotification('Logged out successfully.', 'success');
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1000);
+        }
+
+        function formatDateTime(timestamp) {
+            if (!timestamp) return '-';
+            const date = new Date(timestamp);
+            return date.toLocaleString();
+        }
+
+        function escapeHtml(unsafe) {
+            if (!unsafe) return unsafe;
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+    </script>
+</body>
+</html>

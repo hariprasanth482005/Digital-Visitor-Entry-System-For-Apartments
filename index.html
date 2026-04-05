@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Digital Visitor Entry System</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="notification-container" id="notificationContainer"></div>
+
+        <div class="login-container">
+            <div class="login-header">
+                <h1><i class="fas fa-building"></i> Digital Visitor Entry System</h1>
+                <p>Secure entry management for residential apartments</p>
+            </div>
+
+            <div class="role-selection">
+                <h2>Select Your Role</h2>
+                <div class="role-buttons">
+                    <button class="role-btn admin-role" data-role="admin">
+                        <i class="fas fa-user-shield"></i>
+                        <span>Admin</span>
+                        <small>Apartment Management</small>
+                    </button>
+                    <button class="role-btn security-role" data-role="security">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Security</span>
+                        <small>Gate Security</small>
+                    </button>
+                    <button class="role-btn resident-role" data-role="resident">
+                        <i class="fas fa-home"></i>
+                        <span>Resident</span>
+                        <small>Apartment Resident</small>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Admin Login Form -->
+            <div class="login-form" id="admin-login-form" style="display: none;">
+                <h3><i class="fas fa-user-shield"></i> Admin Login</h3>
+                <div class="form-group">
+                    <label for="admin-password">Password</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="admin-password" placeholder="Enter admin password">
+                        <i class="fas fa-eye toggle-password"></i>
+                    </div>
+                    <small class="form-hint">Default password: admin123</small>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-back" id="admin-back-btn">← Back to Role Selection</button>
+                    <button type="button" class="btn-login admin-login" id="admin-login-btn"
+                        onclick="handleAdminLogin()">Login</button>
+                </div>
+            </div>
+
+            <!-- Security Login Form -->
+            <div class="login-form" id="security-login-form" style="display: none;">
+                <h3><i class="fas fa-shield-alt"></i> Security Login</h3>
+                <div class="form-group">
+                    <label for="security-password">Password</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="security-password" placeholder="Enter security password">
+                        <i class="fas fa-eye toggle-password"></i>
+                    </div>
+                    <small class="form-hint">Set by admin. Default: security123</small>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-back" id="security-back-btn">← Back to Role Selection</button>
+                    <button type="button" class="btn-login security-login" id="security-login-btn"
+                        onclick="handleSecurityLogin()">Login</button>
+                </div>
+            </div>
+
+            <!-- Resident Login Form -->
+            <div class="login-form" id="resident-login-form" style="display: none;">
+                <h3><i class="fas fa-home"></i> Resident Login</h3>
+                <div class="form-group">
+                    <label for="resident-phone">Mobile Number</label>
+                    <input type="text" id="resident-phone" placeholder="Enter your mobile number">
+                </div>
+                <div class="form-group">
+                    <label for="resident-password">Password</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="resident-password" placeholder="Enter your password">
+                        <i class="fas fa-eye toggle-password"></i>
+                    </div>
+                </div>
+                <div class="form-options"
+                    style="display: flex; flex-direction: column; align-items: flex-end; gap: 10px;">
+                    <button type="button" class="btn-link" id="forgot-password-btn">Forgot Password?</button>
+                    <button type="button" class="btn-link" id="new-resident-btn">New Resident? Register Here</button>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-back" id="resident-back-btn">← Back to Role Selection</button>
+                    <button type="button" class="btn-login resident-login" id="resident-login-btn"
+                        onclick="handleResidentLogin()">Login</button>
+                </div>
+            </div>
+
+            <!-- Forgot Password Form -->
+            <div class="login-form" id="forgot-password-form" style="display: none;">
+                <h3><i class="fas fa-key"></i> Reset Password</h3>
+                <div class="form-group">
+                    <label for="forgot-phone">Mobile Number</label>
+                    <input type="text" id="forgot-phone" placeholder="Enter your registered mobile number">
+                </div>
+                <div id="otp-section" style="display: none;">
+                    <div class="form-group">
+                        <label for="otp-input">Enter OTP</label>
+                        <input type="text" id="otp-input" placeholder="Enter 6-digit OTP">
+                        <small class="form-hint">OTP has been sent to your mobile number</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-password">New Password</label>
+                        <div class="password-input-wrapper">
+                            <input type="password" id="new-password" placeholder="Enter new password">
+                            <i class="fas fa-eye toggle-password"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-back" id="back-to-resident-login">← Back to Login</button>
+                    <button type="button" class="btn-login resident-login" id="send-otp-btn"
+                        onclick="handleSendOTP()">Send OTP</button>
+                    <button type="button" class="btn-login resident-login" id="reset-password-btn"
+                        style="display: none;" onclick="handleResetPassword()">Reset Password</button>
+                </div>
+            </div>
+
+            <!-- First Time Registration Form -->
+            <div class="login-form" id="first-time-registration-form" style="display: none;">
+                <h3><i class="fas fa-user-plus"></i> First Time Registration</h3>
+                <p class="form-subtitle">Please verify your details to complete registration</p>
+                <div class="form-group">
+                    <label for="reg-phone">Mobile Number</label>
+                    <input type="text" id="reg-phone" placeholder="Enter your mobile number">
+                </div>
+                <div class="form-group">
+                    <label for="reg-flat">Flat Number</label>
+                    <input type="text" id="reg-flat" placeholder="Enter your flat number (e.g., A-101)">
+                </div>
+                <div id="reg-otp-section" style="display: none;">
+                    <div class="form-group">
+                        <label for="reg-otp">Enter OTP</label>
+                        <input type="text" id="reg-otp" placeholder="Enter 6-digit OTP">
+                        <small class="form-hint">OTP has been sent to your mobile number</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-password">Set Password</label>
+                        <div class="password-input-wrapper">
+                            <input type="password" id="reg-password" placeholder="Set your password">
+                            <i class="fas fa-eye toggle-password"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-back" id="back-to-resident-from-reg">← Back to Login</button>
+                    <button type="button" class="btn-login resident-login" id="verify-details-btn"
+                        onclick="handleVerifyDetails()">Verify Details</button>
+                    <button type="button" class="btn-login resident-login" id="complete-reg-btn" style="display: none;"
+                        onclick="handleCompleteRegistration()">Complete Registration</button>
+                </div>
+            </div>
+
+            <div class="login-footer">
+                <p>Digital Visitor Entry System v2.0 | College Project</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/script.js"></script>
+    <script>
+        // API Configuration
+        const API_BASE_URL = 'http://localhost:5000/api';
+
+        // Store current mobile for OTP verification
+        let currentMobile = '';
+
+        // Check if already logged in
+        document.addEventListener('DOMContentLoaded', function () {
+            const token = localStorage.getItem('token');
+            const user = JSON.parse(localStorage.getItem('user') || 'null');
+
+            if (token && user) {
+                // Verify token with backend
+                verifyToken(token, user.role);
+            }
+
+            // Setup form navigation
+            setupFormNavigation();
+
+            // Setup password visibility toggles
+            document.querySelectorAll('.toggle-password').forEach(icon => {
+                icon.addEventListener('click', function () {
+                    const input = this.previousElementSibling;
+                    const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                    input.setAttribute('type', type);
+                    this.classList.toggle('fa-eye');
+                    this.classList.toggle('fa-eye-slash');
+                });
+            });
+        });
+
+        // Verify token with backend
+        async function verifyToken(token, role) {
+            try {
+                // You can add a token verification endpoint
+                // For now, redirect based on role
+                switch (role) {
+                    case 'admin':
+                        window.location.href = 'admin.html';
+                        break;
+                    case 'security':
+                        window.location.href = 'security.html';
+                        break;
+                    case 'resident':
+                        window.location.href = 'resident.html';
+                        break;
+                }
+            } catch (error) {
+                console.error('Token verification failed:', error);
+                localStorage.clear();
+            }
+        }
+
+        // Setup form navigation
+        function setupFormNavigation() {
+            // Role selection buttons
+            const roleButtons = document.querySelectorAll('.role-btn');
+            const loginForms = document.querySelectorAll('.login-form');
+            const roleSelection = document.querySelector('.role-selection');
+
+            roleButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const role = this.getAttribute('data-role');
+
+                    roleSelection.style.display = 'none';
+                    loginForms.forEach(form => form.style.display = 'none');
+
+                    document.getElementById(`${role}-login-form`).style.display = 'block';
+                });
+            });
+
+            // Back buttons
+            document.querySelectorAll('.btn-back').forEach(button => {
+                button.addEventListener('click', function () {
+                    loginForms.forEach(form => form.style.display = 'none');
+                    roleSelection.style.display = 'block';
+
+                    // Reset forms
+                    resetForms();
+                });
+            });
+
+            // Forgot Password button
+            document.getElementById('forgot-password-btn').addEventListener('click', function () {
+                document.getElementById('resident-login-form').style.display = 'none';
+                document.getElementById('forgot-password-form').style.display = 'block';
+            });
+
+            // New Resident button
+            document.getElementById('new-resident-btn').addEventListener('click', function () {
+                document.getElementById('resident-login-form').style.display = 'none';
+                document.getElementById('first-time-registration-form').style.display = 'block';
+            });
+
+            // Back to resident login from forgot password
+            document.getElementById('back-to-resident-login').addEventListener('click', function () {
+                document.getElementById('forgot-password-form').style.display = 'none';
+                document.getElementById('resident-login-form').style.display = 'block';
+                resetForgotPasswordForm();
+            });
+
+            // Back to resident login from registration
+            document.getElementById('back-to-resident-from-reg').addEventListener('click', function () {
+                document.getElementById('first-time-registration-form').style.display = 'none';
+                document.getElementById('resident-login-form').style.display = 'block';
+                resetRegistrationForm();
+            });
+        }
+
+        // Reset all forms
+        function resetForms() {
+            // Reset admin form
+            document.getElementById('admin-password').value = '';
+
+            // Reset security form
+            document.getElementById('security-password').value = '';
+
+            // Reset resident form
+            document.getElementById('resident-phone').value = '';
+            document.getElementById('resident-password').value = '';
+
+            // Reset forgot password form
+            resetForgotPasswordForm();
+
+            // Reset registration form
+            resetRegistrationForm();
+        }
+
+        // Reset forgot password form
+        function resetForgotPasswordForm() {
+            document.getElementById('forgot-phone').value = '';
+            document.getElementById('otp-input').value = '';
+            document.getElementById('new-password').value = '';
+            document.getElementById('otp-section').style.display = 'none';
+            document.getElementById('send-otp-btn').style.display = 'inline-block';
+            document.getElementById('reset-password-btn').style.display = 'none';
+        }
+
+        // Reset registration form
+        function resetRegistrationForm() {
+            document.getElementById('reg-phone').value = '';
+            document.getElementById('reg-phone').readOnly = false;
+            document.getElementById('reg-flat').value = '';
+            document.getElementById('reg-flat').readOnly = false;
+            document.getElementById('reg-otp').value = '';
+            document.getElementById('reg-password').value = '';
+            document.getElementById('reg-otp-section').style.display = 'none';
+            document.getElementById('verify-details-btn').style.display = 'inline-block';
+            document.getElementById('complete-reg-btn').style.display = 'none';
+        }
+
+        // Admin Login Handler
+        async function handleAdminLogin() {
+            const password = document.getElementById('admin-password').value;
+
+            if (!password) {
+                showNotification('Please enter password', 'error');
+                return;
+            }
+
+            try {
+                showNotification('Logging in...', 'info');
+
+                const response = await fetch(`${API_BASE_URL}/auth/admin-login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ password })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Store auth data
+                    localStorage.setItem('token', data.data.token);
+                    localStorage.setItem('user', JSON.stringify(data.data.user));
+                    localStorage.setItem('userRole', 'admin');
+                    localStorage.setItem('loginTime', new Date().getTime());
+
+                    showNotification('Login successful! Redirecting...', 'success');
+
+                    setTimeout(() => {
+                        window.location.href = 'admin.html';
+                    }, 500);
+                } else {
+                    showNotification(data.message || 'Login failed', 'error');
+                }
+            } catch (error) {
+                console.error('Admin login error:', error);
+                showNotification('Server error. Please try again.', 'error');
+            }
+        }
+
+        // Security Login Handler
+        async function handleSecurityLogin() {
+            const password = document.getElementById('security-password').value;
+
+            if (!password) {
+                showNotification('Please enter password', 'error');
+                return;
+            }
+
+            try {
+                showNotification('Logging in...', 'info');
+
+                const response = await fetch(`${API_BASE_URL}/auth/security-login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ password })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Store auth data
+                    localStorage.setItem('token', data.data.token);
+                    localStorage.setItem('user', JSON.stringify(data.data.user));
+                    localStorage.setItem('userRole', 'security');
+                    localStorage.setItem('loginTime', new Date().getTime());
+
+                    showNotification('Login successful! Redirecting...', 'success');
+
+                    setTimeout(() => {
+                        window.location.href = 'security.html';
+                    }, 1500);
+                } else {
+                    showNotification(data.message || 'Login failed', 'error');
+                }
+            } catch (error) {
+                console.error('Security login error:', error);
+                showNotification('Server error. Please try again.', 'error');
+            }
+        }
+
+        // Resident Login Handler
+        async function handleResidentLogin() {
+            const mobile = document.getElementById('resident-phone').value.trim();
+            const password = document.getElementById('resident-password').value;
+
+            if (!mobile || !password) {
+                showNotification('Please enter mobile number and password', 'error');
+                return;
+            }
+
+            if (!/^\d{10}$/.test(mobile)) {
+                showNotification('Please enter a valid 10-digit mobile number', 'error');
+                return;
+            }
+
+            try {
+                showNotification('Logging in...', 'info');
+
+                const response = await fetch(`${API_BASE_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        mobile,
+                        password,
+                        role: 'resident'
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Store auth data
+                    localStorage.setItem('token', data.data.token);
+                    localStorage.setItem('user', JSON.stringify(data.data.user));
+                    localStorage.setItem('userRole', 'resident');
+                    localStorage.setItem('loginTime', new Date().getTime());
+
+                    // Check if first time login
+                    if (data.data.user.firstTimeLogin) {
+                        showNotification('Please complete first-time registration', 'info');
+
+                        // Show first time registration form with pre-filled data
+                        document.getElementById('resident-login-form').style.display = 'none';
+                        document.getElementById('first-time-registration-form').style.display = 'block';
+
+                        document.getElementById('reg-phone').value = mobile;
+                        document.getElementById('reg-phone').readOnly = true;
+                        document.getElementById('reg-flat').value = data.data.user.flatNumber || '';
+                        document.getElementById('reg-flat').readOnly = true;
+
+                        currentMobile = mobile;
+                    } else {
+                        showNotification('Login successful! Redirecting...', 'success');
+
+                        setTimeout(() => {
+                            window.location.href = 'resident.html';
+                        }, 1500);
+                    }
+                } else {
+                    showNotification(data.message || 'Login failed', 'error');
+                }
+            } catch (error) {
+                console.error('Resident login error:', error);
+                showNotification('Server error. Please try again.', 'error');
+            }
+        }
+
+        // Send OTP for forgot password via Twilio
+        async function handleSendOTP() {
+            const mobile = document.getElementById('forgot-phone').value.trim();
+
+            if (!mobile) {
+                showNotification('Please enter mobile number', 'error');
+                return;
+            }
+
+            if (!/^\d{10}$/.test(mobile)) {
+                showNotification('Please enter a valid 10-digit mobile number', 'error');
+                return;
+            }
+
+            try {
+                showNotification('Sending OTP...', 'info');
+
+                // Send OTP via our backend (Twilio)
+                const response = await api.forgotPassword(mobile);
+
+                if (response.success) {
+                    document.getElementById('otp-section').style.display = 'block';
+                    document.getElementById('send-otp-btn').style.display = 'none';
+                    document.getElementById('reset-password-btn').style.display = 'inline-block';
+
+                    currentMobile = mobile;
+                    showNotification('OTP sent successfully to your mobile!', 'success');
+                } else {
+                    showNotification(response.message || 'Failed to send OTP', 'error');
+                }
+            } catch (error) {
+                console.error('Send OTP error:', error);
+                showNotification(error.message || 'Failed to send OTP', 'error');
+            }
+        }
+
+        // Reset password with Twilio OTP
+        async function handleResetPassword() {
+            const otp = document.getElementById('otp-input').value.trim();
+            const newPassword = document.getElementById('new-password').value;
+
+            if (!otp || !newPassword) {
+                showNotification('Please enter OTP and new password', 'error');
+                return;
+            }
+
+            if (otp.length !== 6) {
+                showNotification('Please enter a valid 6-digit OTP', 'error');
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                showNotification('Password must be at least 6 characters', 'error');
+                return;
+            }
+
+            try {
+                showNotification('Resetting password...', 'info');
+
+                // Reset password via our backend
+                const response = await api.resetPassword(currentMobile, otp, newPassword);
+
+                if (response.success) {
+                    showNotification('Password reset successful! Please login.', 'success');
+
+                    setTimeout(() => {
+                        document.getElementById('forgot-password-form').style.display = 'none';
+                        document.getElementById('resident-login-form').style.display = 'block';
+                        resetForgotPasswordForm();
+                    }, 1500);
+                } else {
+                    showNotification(response.message || 'Failed to reset password', 'error');
+                }
+            } catch (error) {
+                console.error('Reset password error:', error);
+                showNotification(error.message || 'Server error. Please try again.', 'error');
+            }
+        }
+
+        // Verify details and send registration OTP via Twilio
+        async function handleVerifyDetails() {
+            const mobile = document.getElementById('reg-phone').value.trim();
+            const flat = document.getElementById('reg-flat').value.trim();
+
+            if (!mobile || !flat) {
+                showNotification('Please enter mobile number and flat number', 'error');
+                return;
+            }
+
+            if (!/^\d{10}$/.test(mobile)) {
+                showNotification('Please enter a valid 10-digit mobile number', 'error');
+                return;
+            }
+
+            try {
+                showNotification('Verifying details...', 'info');
+
+                // Send registration OTP via our backend
+                const response = await api.sendRegistrationOTP(mobile, flat);
+
+                if (response.success) {
+                    document.getElementById('reg-otp-section').style.display = 'block';
+                    document.getElementById('verify-details-btn').style.display = 'none';
+                    document.getElementById('complete-reg-btn').style.display = 'inline-block';
+
+                    currentMobile = mobile;
+                    showNotification('OTP sent for verification to your mobile!', 'success');
+                } else {
+                    showNotification(response.message || 'Verification failed', 'error');
+                }
+            } catch (error) {
+                console.error('Verify details error:', error);
+                showNotification(error.message || 'Server error. Please try again.', 'error');
+            }
+        }
+
+        // Complete first time registration with Twilio OTP
+        async function handleCompleteRegistration() {
+            const otp = document.getElementById('reg-otp').value.trim();
+            const password = document.getElementById('reg-password').value;
+            const mobile = document.getElementById('reg-phone').value.trim();
+            const flat = document.getElementById('reg-flat').value.trim();
+
+            if (!otp || !password) {
+                showNotification('Please enter OTP and set password', 'error');
+                return;
+            }
+
+            if (otp.length !== 6) {
+                showNotification('Please enter a valid 6-digit OTP', 'error');
+                return;
+            }
+
+            if (password.length < 6) {
+                showNotification('Password must be at least 6 characters', 'error');
+                return;
+            }
+
+            try {
+                showNotification('Completing registration...', 'info');
+
+                // Complete registration via our backend
+                const response = await api.firstTimeRegister(mobile, flat, otp, password);
+
+                if (response.success) {
+                    // Store auth data
+                    localStorage.setItem('token', response.data.token);
+                    // Fetch user info or redirect to login
+                    showNotification('Registration complete! Please login to continue.', 'success');
+
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1500);
+                } else {
+                    showNotification(response.message || 'Registration failed', 'error');
+                }
+            } catch (error) {
+                console.error('Complete registration error:', error);
+                showNotification(error.message || 'Server error. Please try again.', 'error');
+            }
+        }
+
+        // Check if user is already logged in (called from script.js)
+        function checkExistingSession() {
+            // This function will be overridden by the DOMContentLoaded handler
+        }
+    </script>
+</body>
+
+</html>
